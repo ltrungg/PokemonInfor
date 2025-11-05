@@ -10,16 +10,24 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemon ORDER BY id ASC LIMIT :limit OFFSET :offset")
     suspend fun page(offset: Int, limit: Int): List<PokemonEntity>
 
-    @Query("SELECT * FROM pokemon WHERE name LIKE '%' || :q || '%' ORDER BY id ASC")
+    @Query("""
+        SELECT * FROM pokemon
+        WHERE LOWER(name) LIKE '%' || LOWER(:q) || '%'
+        ORDER BY id ASC
+    """)
     fun search(q: String): Flow<List<PokemonEntity>>
 
     @Query("""
-    SELECT p.* FROM pokemon p
-    JOIN pokemon_type pt ON pt.pokemonId = p.id
-    WHERE (:type IS NULL OR pt.typeName = :type)
-      AND (:q IS NULL OR p.name LIKE '%' || :q || '%')
-    GROUP BY p.id ORDER BY p.id ASC
-  """)
+        SELECT p.*
+        FROM pokemon AS p
+        LEFT JOIN pokemon_type AS pt ON pt.pokemonId = p.id
+        WHERE
+            (:type IS NULL OR :type = '' OR LOWER(pt.typeName) = LOWER(:type))
+        AND
+            (:q IS NULL OR :q = '' OR LOWER(p.name) LIKE '%' || LOWER(:q) || '%')
+        GROUP BY p.id
+        ORDER BY p.id ASC
+    """)
     fun filter(type: String?, q: String?): Flow<List<PokemonEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -31,23 +39,23 @@ interface PokemonDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCrossRefs(x: List<PokemonTypeCrossRef>)
 
-    // ===== NEW for Detail & Favorites =====
+    // ===== Detail & Favorites =====
     @Query("SELECT COUNT(*) FROM pokemon")
     suspend fun countPokemon(): Int
 
     @Query("SELECT typeName FROM pokemon_type WHERE pokemonId = :id")
     fun typesOf(id: Int): Flow<List<String>>
+
     @Query("SELECT * FROM pokemon WHERE id = :id LIMIT 1")
     fun getById(id: Int): Flow<PokemonEntity?>
 
     @Query("""
-      SELECT p.* FROM pokemon p
-      INNER JOIN favorite f ON f.pokemonId = p.id
-      ORDER BY f.createdAt DESC
-  """)
+        SELECT p.*
+        FROM pokemon p
+        INNER JOIN favorite f ON f.pokemonId = p.id
+        ORDER BY f.createdAt DESC
+    """)
     fun favoritesJoin(): Flow<List<PokemonEntity>>
-
-    // ===== Favorite table ops you had before (optional to keep) =====
 
     @Query("SELECT * FROM favorite ORDER BY createdAt DESC")
     fun favorites(): Flow<List<FavoriteEntity>>

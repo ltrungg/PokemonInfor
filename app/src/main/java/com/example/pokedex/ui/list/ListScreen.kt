@@ -54,7 +54,7 @@ fun ListScreen(
             // Dropdown hệ — dùng state.type
             TypeDropdown(
                 selected = state.type,
-                onSelected = viewModel::onTypeChange,
+                onSelected = { t -> viewModel.onTypeChange(t?.lowercase()) },
                 modifier = Modifier.fillMaxWidth()
             )
 
