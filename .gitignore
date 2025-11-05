@@ -1,0 +1,82 @@
+# -------- Android/Gradle --------
+.gradle/
+**/build/
+**/.cxx/
+.externalNativeBuild/
+captures/
+*.hprof
+*.log
+
+# Gradle wrapper: keep these files tracked
+!gradlew
+!gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# -------- IntelliJ / Android Studio --------
+.idea/
+*.iml
+*.ipr
+*.iws
+# (Nếu muốn giữ chạy cấu hình/format, bỏ comment các dòng dưới)
+#.idea/codeStyles/
+#.idea/runConfigurations/
+
+# -------- Local configs / secrets --------
+local.properties
+keystore.properties
+*.keystore
+*.jks
+*.pem
+*.p12
+*.key
+*.der
+*.crt
+*.cert
+*.pub
+*.priv
+secrets.*
+.env
+.env.*
+GoogleService-Info.plist
+
+# -------- Kotlin / Compose / KSP --------
+.kotlinc/
+.ksp/
+compose-metrics/
+compose-reports/
+*.csv
+
+# -------- Build outputs / binaries --------
+*.apk
+*.ap_
+*.aab
+*.aar
+*.so
+*.dex
+*.class
+bin/
+gen/
+
+# -------- Lint / reports --------
+lint/intermediates/
+lint/generated/
+lint/outputs/
+lint/tmp/
+
+# -------- Fastlane (nếu dùng) --------
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# -------- OS / Editors --------
+.DS_Store
+Thumbs.db
+.vscode/
+
+# -------- Firebase Emulator (nếu dùng) --------
+.firebase/
+
+# -------- Room schema export (bỏ comment nếu bạn không muốn commit) --------
+# schemas/
